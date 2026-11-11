@@ -17,7 +17,7 @@ export const LoansView: React.FC<LoansViewProps> = ({ userId }) => {
   const [showPayModal, setShowPayModal] = useState(false);
   const [selectedLoan, setSelectedLoan] = useState<Loan | null>(null);
 
-  // Form states for creating loan
+  // Form states
   const [loanName, setLoanName] = useState('');
   const [lender, setLender] = useState('');
   const [originalAmount, setOriginalAmount] = useState('');
@@ -122,24 +122,26 @@ export const LoansView: React.FC<LoansViewProps> = ({ userId }) => {
   };
 
   return (
-    <div className="p-6 max-w-7xl mx-auto space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-2xl font-bold text-dark-text">Loans & EMI Management</h1>
+    <div className="p-8 max-w-7xl mx-auto space-y-8">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-gradient-to-r from-dark-card via-[#161b22] to-dark-card border border-dark-border p-6 rounded-2xl shadow-xl">
+        <div className="space-y-1">
+          <h1 className="text-3xl font-extrabold text-dark-text tracking-tight">Loans & EMI Management</h1>
           <p className="text-dark-muted text-sm">Track loan liabilities, outstanding principal, and monthly EMI payments</p>
         </div>
         <button
           onClick={() => setShowModal(true)}
-          className="flex items-center gap-2 bg-fintech-blue hover:opacity-90 text-white font-semibold px-4 py-2 rounded-lg transition"
+          className="flex items-center gap-2 bg-fintech-blue hover:opacity-90 text-white font-semibold px-5 py-2.5 rounded-xl shadow-lg shadow-fintech-blue/20 transition"
         >
           <Plus className="w-5 h-5" /> Add Loan
         </button>
       </div>
 
       {loading ? (
-        <p className="text-dark-muted">Loading loans...</p>
+        <div className="flex justify-center items-center py-20">
+          <p className="text-dark-muted animate-pulse font-medium">Loading loans...</p>
+        </div>
       ) : loans.length === 0 ? (
-        <div className="bg-dark-card border border-dark-border rounded-xl p-8 text-center text-dark-muted">
+        <div className="bg-dark-card border border-dark-border border-dashed rounded-2xl p-12 text-center text-dark-muted">
           No loans recorded. Click "Add Loan" to track your liabilities.
         </div>
       ) : (
@@ -147,40 +149,38 @@ export const LoansView: React.FC<LoansViewProps> = ({ userId }) => {
           {loans.map((loan) => {
             const paidProgress = Math.max(0, 100 - ((Number(loan.outstanding_principal) / Number(loan.original_amount)) * 100));
             return (
-              <div key={loan.id} className="bg-dark-card border border-dark-border rounded-xl p-5 shadow-lg flex flex-col justify-between space-y-4">
-                <div>
-                  <div className="flex justify-between items-start mb-2">
-                    <div className="flex items-center gap-3">
-                      <div className="p-2.5 bg-dark-bg rounded-lg border border-dark-border text-fintech-blue">
-                        <Landmark className="w-5 h-5" />
-                      </div>
-                      <div>
-                        <h3 className="font-semibold text-lg text-dark-text">{loan.loan_name}</h3>
-                        <span className="text-xs text-dark-muted">{loan.lender || 'Personal/Other Lender'}</span>
-                      </div>
+              <div key={loan.id} className="bg-gradient-to-br from-dark-card to-[#12161c] border border-dark-border/80 rounded-2xl p-6 shadow-xl space-y-4">
+                <div className="flex justify-between items-start">
+                  <div className="flex items-center gap-3">
+                    <div className="p-3 bg-dark-bg rounded-xl border border-dark-border text-fintech-blue">
+                      <Landmark className="w-5 h-5" />
                     </div>
-                    <button onClick={() => handleDelete(loan.id)} className="text-dark-muted hover:text-fintech-red transition">
-                      <Trash2 className="w-4 h-4" />
-                    </button>
+                    <div>
+                      <h3 className="font-bold text-lg text-dark-text">{loan.loan_name}</h3>
+                      <span className="text-xs text-dark-muted">{loan.lender || 'Personal/Other Lender'}</span>
+                    </div>
                   </div>
+                  <button onClick={() => handleDelete(loan.id)} className="text-dark-muted hover:text-fintech-red transition p-1.5 rounded-lg hover:bg-dark-bg">
+                    <Trash2 className="w-4 h-4" />
+                  </button>
                 </div>
 
                 <div className="space-y-3 pt-2 border-t border-dark-border">
                   <div className="flex justify-between text-sm">
                     <span className="text-dark-muted">Outstanding:</span>
-                    <span className="font-bold text-fintech-red">৳ {Number(loan.outstanding_principal).toLocaleString()}</span>
+                    <span className="font-black text-fintech-red">৳ {Number(loan.outstanding_principal).toLocaleString()}</span>
                   </div>
                   <div className="flex justify-between text-xs text-dark-muted">
                     <span>Original: ৳ {Number(loan.original_amount).toLocaleString()}</span>
                     <span>EMI: ৳ {Number(loan.emi_amount).toLocaleString()}</span>
                   </div>
 
-                  <div className="w-full bg-dark-bg rounded-full h-2 border border-dark-border overflow-hidden">
+                  <div className="w-full bg-dark-bg rounded-full h-3 border border-dark-border overflow-hidden">
                     <div className="bg-fintech-green h-full transition-all duration-500" style={{ width: `${paidProgress}%` }}></div>
                   </div>
 
                   <div className="flex justify-between items-center pt-2">
-                    <span className="text-xs text-dark-muted">{paidProgress.toFixed(1)}% Paid Off</span>
+                    <span className="text-xs text-dark-muted font-medium">{paidProgress.toFixed(1)}% Paid Off</span>
                     {loan.status === 'Completed' ? (
                       <span className="flex items-center gap-1 text-xs text-fintech-green font-semibold">
                         <CheckCircle className="w-4 h-4" /> Fully Paid
@@ -188,7 +188,7 @@ export const LoansView: React.FC<LoansViewProps> = ({ userId }) => {
                     ) : (
                       <button
                         onClick={() => openPayModal(loan)}
-                        className="px-3 py-1 bg-fintech-blue text-white text-xs font-semibold rounded-lg hover:opacity-90 transition"
+                        className="px-3.5 py-1.5 bg-fintech-blue text-white text-xs font-semibold rounded-xl hover:opacity-90 transition shadow-md shadow-fintech-blue/20"
                       >
                         Pay EMI
                       </button>
@@ -201,10 +201,11 @@ export const LoansView: React.FC<LoansViewProps> = ({ userId }) => {
         </div>
       )}
 
+      {/* Add Loan Modal */}
       {showModal && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex justify-center items-center z-50 p-4">
-          <div className="bg-dark-card border border-dark-border rounded-2xl w-full max-w-md p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
-            <h2 className="text-xl font-bold mb-4 text-dark-text">Add Loan Liability</h2>
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-md flex justify-center items-center z-50 p-4">
+          <div className="bg-dark-card border border-dark-border rounded-2xl w-full max-w-md p-8 shadow-2xl space-y-6 max-h-[90vh] overflow-y-auto">
+            <h2 className="text-2xl font-bold text-dark-text">Add Loan Liability</h2>
             <form onSubmit={handleCreateLoan} className="space-y-4">
               <div>
                 <label className="block text-xs text-dark-muted mb-1">Loan Title</label>
@@ -214,7 +215,7 @@ export const LoansView: React.FC<LoansViewProps> = ({ userId }) => {
                   placeholder="e.g. Bank Car Loan, Personal Debt"
                   value={loanName}
                   onChange={(e) => setLoanName(e.target.value)}
-                  className="w-full bg-dark-bg border border-dark-border rounded-lg px-3 py-2 text-dark-text focus:outline-none focus:border-fintech-blue"
+                  className="w-full bg-dark-bg border border-dark-border rounded-xl px-4 py-2.5 text-dark-text text-sm focus:outline-none focus:border-fintech-blue"
                 />
               </div>
               <div>
@@ -224,7 +225,7 @@ export const LoansView: React.FC<LoansViewProps> = ({ userId }) => {
                   placeholder="e.g. City Bank, BRAC"
                   value={lender}
                   onChange={(e) => setLender(e.target.value)}
-                  className="w-full bg-dark-bg border border-dark-border rounded-lg px-3 py-2 text-dark-text focus:outline-none focus:border-fintech-blue"
+                  className="w-full bg-dark-bg border border-dark-border rounded-xl px-4 py-2.5 text-dark-text text-sm focus:outline-none focus:border-fintech-blue"
                 />
               </div>
               <div>
@@ -236,7 +237,7 @@ export const LoansView: React.FC<LoansViewProps> = ({ userId }) => {
                   placeholder="100000"
                   value={originalAmount}
                   onChange={(e) => setOriginalAmount(e.target.value)}
-                  className="w-full bg-dark-bg border border-dark-border rounded-lg px-3 py-2 text-dark-text focus:outline-none focus:border-fintech-blue"
+                  className="w-full bg-dark-bg border border-dark-border rounded-xl px-4 py-2.5 text-dark-text text-sm focus:outline-none focus:border-fintech-blue"
                 />
               </div>
               <div>
@@ -248,7 +249,7 @@ export const LoansView: React.FC<LoansViewProps> = ({ userId }) => {
                   placeholder="10000"
                   value={emiAmount}
                   onChange={(e) => setEmiAmount(e.target.value)}
-                  className="w-full bg-dark-bg border border-dark-border rounded-lg px-3 py-2 text-dark-text focus:outline-none focus:border-fintech-blue"
+                  className="w-full bg-dark-bg border border-dark-border rounded-xl px-4 py-2.5 text-dark-text text-sm focus:outline-none focus:border-fintech-blue"
                 />
               </div>
               <div className="grid grid-cols-2 gap-3">
@@ -260,7 +261,7 @@ export const LoansView: React.FC<LoansViewProps> = ({ userId }) => {
                     placeholder="12"
                     value={totalDuration}
                     onChange={(e) => setTotalDuration(e.target.value)}
-                    className="w-full bg-dark-bg border border-dark-border rounded-lg px-3 py-2 text-dark-text focus:outline-none focus:border-fintech-blue"
+                    className="w-full bg-dark-bg border border-dark-border rounded-xl px-4 py-2.5 text-dark-text text-sm focus:outline-none focus:border-fintech-blue"
                   />
                 </div>
                 <div>
@@ -271,7 +272,7 @@ export const LoansView: React.FC<LoansViewProps> = ({ userId }) => {
                     placeholder="9.0"
                     value={interestRate}
                     onChange={(e) => setInterestRate(e.target.value)}
-                    className="w-full bg-dark-bg border border-dark-border rounded-lg px-3 py-2 text-dark-text focus:outline-none focus:border-fintech-blue"
+                    className="w-full bg-dark-bg border border-dark-border rounded-xl px-4 py-2.5 text-dark-text text-sm focus:outline-none focus:border-fintech-blue"
                   />
                 </div>
               </div>
@@ -282,23 +283,24 @@ export const LoansView: React.FC<LoansViewProps> = ({ userId }) => {
                   required
                   value={loanStartDate}
                   onChange={(e) => setLoanStartDate(e.target.value)}
-                  className="w-full bg-dark-bg border border-dark-border rounded-lg px-3 py-2 text-dark-text focus:outline-none focus:border-fintech-blue"
+                  className="w-full bg-dark-bg border border-dark-border rounded-xl px-4 py-2.5 text-dark-text text-sm focus:outline-none focus:border-fintech-blue"
                 />
               </div>
-              <div className="flex justify-end gap-3 mt-6">
-                <button type="button" onClick={() => setShowModal(false)} className="px-4 py-2 rounded-lg border border-dark-border text-dark-muted hover:text-dark-text transition">Cancel</button>
-                <button type="submit" className="px-4 py-2 rounded-lg bg-fintech-blue text-white font-semibold hover:opacity-90 transition">Save Loan</button>
+              <div className="flex justify-end gap-3 pt-4">
+                <button type="button" onClick={() => setShowModal(false)} className="px-5 py-2.5 rounded-xl border border-dark-border text-dark-muted text-sm font-semibold">Cancel</button>
+                <button type="submit" className="px-5 py-2.5 rounded-xl bg-fintech-blue text-white font-semibold text-sm shadow-lg shadow-fintech-blue/20">Save Loan</button>
               </div>
             </form>
           </div>
         </div>
       )}
 
+      {/* Pay EMI Modal */}
       {showPayModal && selectedLoan && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex justify-center items-center z-50 p-4">
-          <div className="bg-dark-card border border-dark-border rounded-2xl w-full max-w-md p-6 shadow-2xl">
-            <h2 className="text-xl font-bold mb-2 text-dark-text">Record EMI Payment</h2>
-            <p className="text-xs text-dark-muted mb-4">Loan: <strong>{selectedLoan.loan_name}</strong></p>
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-md flex justify-center items-center z-50 p-4">
+          <div className="bg-dark-card border border-dark-border rounded-2xl w-full max-w-md p-8 shadow-2xl space-y-6">
+            <h2 className="text-2xl font-bold text-dark-text">Record EMI Payment</h2>
+            <p className="text-xs text-dark-muted">Loan: <strong>{selectedLoan.loan_name}</strong></p>
             <form onSubmit={handleRecordPayment} className="space-y-4">
               <div>
                 <label className="block text-xs text-dark-muted mb-1">Total Payment Amount (BDT)</label>
@@ -308,7 +310,7 @@ export const LoansView: React.FC<LoansViewProps> = ({ userId }) => {
                   required
                   value={paymentAmount}
                   onChange={(e) => setPaymentAmount(e.target.value)}
-                  className="w-full bg-dark-bg border border-dark-border rounded-lg px-3 py-2 text-dark-text focus:outline-none focus:border-fintech-blue"
+                  className="w-full bg-dark-bg border border-dark-border rounded-xl px-4 py-2.5 text-dark-text text-sm focus:outline-none focus:border-fintech-blue"
                 />
               </div>
               <div className="grid grid-cols-2 gap-3">
@@ -320,7 +322,7 @@ export const LoansView: React.FC<LoansViewProps> = ({ userId }) => {
                     required
                     value={principalPaid}
                     onChange={(e) => setPrincipalPaid(e.target.value)}
-                    className="w-full bg-dark-bg border border-dark-border rounded-lg px-3 py-2 text-dark-text focus:outline-none focus:border-fintech-blue"
+                    className="w-full bg-dark-bg border border-dark-border rounded-xl px-4 py-2.5 text-dark-text text-sm focus:outline-none focus:border-fintech-blue"
                   />
                 </div>
                 <div>
@@ -331,7 +333,7 @@ export const LoansView: React.FC<LoansViewProps> = ({ userId }) => {
                     required
                     value={interestPaid}
                     onChange={(e) => setInterestPaid(e.target.value)}
-                    className="w-full bg-dark-bg border border-dark-border rounded-lg px-3 py-2 text-dark-text focus:outline-none focus:border-fintech-blue"
+                    className="w-full bg-dark-bg border border-dark-border rounded-xl px-4 py-2.5 text-dark-text text-sm focus:outline-none focus:border-fintech-blue"
                   />
                 </div>
               </div>
@@ -340,7 +342,7 @@ export const LoansView: React.FC<LoansViewProps> = ({ userId }) => {
                 <select
                   value={paymentAccountId}
                   onChange={(e) => setPaymentAccountId(e.target.value)}
-                  className="w-full bg-dark-bg border border-dark-border rounded-lg px-3 py-2 text-dark-text focus:outline-none focus:border-fintech-blue"
+                  className="w-full bg-dark-bg border border-dark-border rounded-xl px-4 py-2.5 text-dark-text text-sm focus:outline-none focus:border-fintech-blue"
                 >
                   {accounts.map(acc => (
                     <option key={acc.id} value={acc.id}>{acc.name} (৳ {acc.current_balance})</option>
@@ -354,12 +356,12 @@ export const LoansView: React.FC<LoansViewProps> = ({ userId }) => {
                   required
                   value={paymentDate}
                   onChange={(e) => setPaymentDate(e.target.value)}
-                  className="w-full bg-dark-bg border border-dark-border rounded-lg px-3 py-2 text-dark-text focus:outline-none focus:border-fintech-blue"
+                  className="w-full bg-dark-bg border border-dark-border rounded-xl px-4 py-2.5 text-dark-text text-sm focus:outline-none focus:border-fintech-blue"
                 />
               </div>
-              <div className="flex justify-end gap-3 mt-6">
-                <button type="button" onClick={() => setShowPayModal(false)} className="px-4 py-2 rounded-lg border border-dark-border text-dark-muted hover:text-dark-text transition">Cancel</button>
-                <button type="submit" className="px-4 py-2 rounded-lg bg-fintech-blue text-white font-semibold hover:opacity-90 transition">Confirm Payment</button>
+              <div className="flex justify-end gap-3 pt-4">
+                <button type="button" onClick={() => setShowPayModal(false)} className="px-5 py-2.5 rounded-xl border border-dark-border text-dark-muted text-sm font-semibold">Cancel</button>
+                <button type="submit" className="px-5 py-2.5 rounded-xl bg-fintech-blue text-white font-semibold text-sm shadow-lg shadow-fintech-blue/20">Confirm Payment</button>
               </div>
             </form>
           </div>
