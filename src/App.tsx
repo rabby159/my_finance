@@ -1,122 +1,123 @@
-import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import './App.css'
+import React, { useState, useEffect } from 'react';
+import { DashboardView } from './components/DashboardView';
+import { AccountsView } from './components/AccountsView';
+import { TransactionsView } from './components/TransactionsView';
+import { BudgetsView } from './components/BudgetsView';
+import { SavingsView } from './components/SavingsView';
+import { LoansView } from './components/LoansView';
+import { seedDefaultCategories } from './utils/defaultCategories';
+import { LayoutDashboard, Wallet, ArrowLeftRight, PieChart, Target, Landmark, ShieldCheck } from 'lucide-react';
 
-function App() {
-  const [count, setCount] = useState(0)
+export function App() {
+  const userId = '00000000-0000-0000-0000-000000000001';
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'accounts' | 'transactions' | 'budgets' | 'savings' | 'loans'>('dashboard');
+  const [initialized, setInitialized] = useState(false);
+
+  useEffect(() => {
+    seedDefaultCategories(userId).then(() => {
+      setInitialized(true);
+    });
+  }, [userId]);
+
+  if (!initialized) {
+    return (
+      <div className="min-h-screen bg-dark-bg text-dark-text flex justify-center items-center">
+        <p className="text-dark-muted animate-pulse">Initializing MyFinance Control System...</p>
+      </div>
+    );
+  }
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+    <div className="min-h-screen bg-dark-bg text-dark-text flex flex-col md:flex-row">
+      
+      {/* Sidebar Navigation */}
+      <aside className="w-full md:w-64 bg-dark-card border-r border-dark-border flex flex-col justify-between p-6">
+        <div className="space-y-8">
+          <div className="flex items-center gap-3">
+            <div className="p-2.5 bg-fintech-blue/10 text-fintech-blue rounded-xl border border-dark-border">
+              <Wallet className="w-6 h-6" />
+            </div>
+            <div>
+              <h1 className="font-bold text-lg text-dark-text tracking-wide">MyFinance</h1>
+              <span className="text-xs text-dark-muted">v1.0 Control System</span>
+            </div>
+          </div>
 
-      <div className="ticks"></div>
+          <nav className="space-y-1">
+            <button
+              onClick={() => setActiveTab('dashboard')}
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm transition ${
+                activeTab === 'dashboard' ? 'bg-fintech-blue text-white shadow-lg shadow-fintech-blue/20' : 'text-dark-muted hover:text-dark-text hover:bg-dark-bg'
+              }`}
+            >
+              <LayoutDashboard className="w-5 h-5" /> Dashboard
+            </button>
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+            <button
+              onClick={() => setActiveTab('accounts')}
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm transition ${
+                activeTab === 'accounts' ? 'bg-fintech-blue text-white shadow-lg shadow-fintech-blue/20' : 'text-dark-muted hover:text-dark-text hover:bg-dark-bg'
+              }`}
+            >
+              <Wallet className="w-5 h-5" /> Accounts & Wallets
+            </button>
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+            <button
+              onClick={() => setActiveTab('transactions')}
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm transition ${
+                activeTab === 'transactions' ? 'bg-fintech-blue text-white shadow-lg shadow-fintech-blue/20' : 'text-dark-muted hover:text-dark-text hover:bg-dark-bg'
+              }`}
+            >
+              <ArrowLeftRight className="w-5 h-5" /> Transactions
+            </button>
+
+            <button
+              onClick={() => setActiveTab('budgets')}
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm transition ${
+                activeTab === 'budgets' ? 'bg-fintech-blue text-white shadow-lg shadow-fintech-blue/20' : 'text-dark-muted hover:text-dark-text hover:bg-dark-bg'
+              }`}
+            >
+              <PieChart className="w-5 h-5" /> Monthly Budgets
+            </button>
+
+            <button
+              onClick={() => setActiveTab('savings')}
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm transition ${
+                activeTab === 'savings' ? 'bg-fintech-blue text-white shadow-lg shadow-fintech-blue/20' : 'text-dark-muted hover:text-dark-text hover:bg-dark-bg'
+              }`}
+            >
+              <Target className="w-5 h-5" /> Savings Goals
+            </button>
+
+            <button
+              onClick={() => setActiveTab('loans')}
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm transition ${
+                activeTab === 'loans' ? 'bg-fintech-blue text-white shadow-lg shadow-fintech-blue/20' : 'text-dark-muted hover:text-dark-text hover:bg-dark-bg'
+              }`}
+            >
+              <Landmark className="w-5 h-5" /> Loans & EMIs
+            </button>
+          </nav>
+        </div>
+
+        <div className="pt-6 border-t border-dark-border text-xs text-dark-muted flex items-center gap-2">
+          <ShieldCheck className="w-4 h-4 text-fintech-green" />
+          <span>Single-User Secure RLS</span>
+        </div>
+      </aside>
+
+      {/* Main Content Area */}
+      <main className="flex-1 overflow-y-auto">
+        {activeTab === 'dashboard' && <DashboardView userId={userId} />}
+        {activeTab === 'accounts' && <AccountsView userId={userId} />}
+        {activeTab === 'transactions' && <TransactionsView userId={userId} />}
+        {activeTab === 'budgets' && <BudgetsView userId={userId} />}
+        {activeTab === 'savings' && <SavingsView userId={userId} />}
+        {activeTab === 'loans' && <LoansView userId={userId} />}
+      </main>
+
+    </div>
+  );
 }
 
-export default App
+export default App;

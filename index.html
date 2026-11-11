@@ -1,12 +1,37 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" class="dark">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>myfinance</title>
+    <title>MyFinance - Personal Finance Control System</title>
+    <!-- Tailwind CSS Play CDN for instant styling support -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              dark: {
+                bg: '#0f172a',
+                card: '#1e293b',
+                border: '#334155',
+                text: '#f8fafc',
+                muted: '#94a3b8',
+              },
+              fintech: {
+                green: '#10b981',
+                red: '#ef4444',
+                blue: '#3b82f6',
+              }
+            }
+          }
+        }
+      }
+    </script>
   </head>
-  <body>
+  <body class="bg-[#0f172a] text-[#f8fafc] min-h-screen">
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
