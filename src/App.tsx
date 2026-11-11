@@ -5,12 +5,13 @@ import { TransactionsView } from './components/TransactionsView';
 import { BudgetsView } from './components/BudgetsView';
 import { SavingsView } from './components/SavingsView';
 import { LoansView } from './components/LoansView';
+import { CreditCardsView } from './components/CreditCardsView';
 import { seedDefaultCategories } from './utils/defaultCategories';
-import { LayoutDashboard, Wallet, ArrowLeftRight, PieChart, Target, Landmark, ShieldCheck } from 'lucide-react';
+import { LayoutDashboard, Wallet, ArrowLeftRight, PieChart, Target, Landmark, CreditCard, ShieldCheck } from 'lucide-react';
 
 export function App() {
   const userId = '00000000-0000-0000-0000-000000000001';
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'accounts' | 'transactions' | 'budgets' | 'savings' | 'loans'>('dashboard');
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'accounts' | 'transactions' | 'budgets' | 'savings' | 'loans' | 'creditCards'>('dashboard');
   const [initialized, setInitialized] = useState(false);
 
   useEffect(() => {
@@ -97,6 +98,15 @@ export function App() {
             >
               <Landmark className="w-5 h-5" /> Loans & EMIs
             </button>
+
+            <button
+              onClick={() => setActiveTab('creditCards')}
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm transition ${
+                activeTab === 'creditCards' ? 'bg-fintech-blue text-white shadow-lg shadow-fintech-blue/20' : 'text-dark-muted hover:text-dark-text hover:bg-dark-bg'
+              }`}
+            >
+              <CreditCard className="w-5 h-5" /> Credit Cards
+            </button>
           </nav>
         </div>
 
@@ -114,6 +124,7 @@ export function App() {
         {activeTab === 'budgets' && <BudgetsView userId={userId} />}
         {activeTab === 'savings' && <SavingsView userId={userId} />}
         {activeTab === 'loans' && <LoansView userId={userId} />}
+        {activeTab === 'creditCards' && <CreditCardsView userId={userId} />}
       </main>
 
     </div>
